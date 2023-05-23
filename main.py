@@ -9,7 +9,8 @@ from aiogram.dispatcher import FSMContext
 
 from keyboards.inline_keyboards import clothing_keyboard, delivery_keyboard, greeting_keyboards
 from services.exchange import get_currency_rate
-from texts.greeting_texts import greeting_post, message_text_clothing, message_text_calculate
+from texts.greeting_texts import greeting_post, message_text_clothing, message_text_calculate, contacts_post, \
+    message_text
 from utils.validation import calculate_insurance_price, calculate_commission_price
 
 config = configparser.ConfigParser(empty_lines_in_values=False, allow_no_value=True)
@@ -21,6 +22,8 @@ storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 logging.basicConfig(level=logging.INFO)
 
+"""Пост приветствие"""
+
 
 @dp.message_handler(commands=['start'])
 async def greeting(message: types.Message, state: FSMContext):
@@ -30,6 +33,15 @@ async def greeting(message: types.Message, state: FSMContext):
     # Клавиатура для Калькулятора цен или Контактов
     await message.reply(greeting_post, reply_markup=keyboards_greeting, disable_web_page_preview=True,
                         parse_mode=types.ParseMode.HTML)
+
+
+"""Контакты для связи"""
+
+
+@dp.callback_query_handler(lambda c: c.data == 'contacts')
+async def contacts_handler(callback_query: types.CallbackQuery):
+    """Контакты для связи"""
+    await bot.send_message(callback_query.from_user.id, contacts_post, parse_mode=types.ParseMode.HTML)
 
 
 """Тип одежды для определения веса"""
@@ -130,37 +142,40 @@ async def calculate_cost_handler(callback_query: types.CallbackQuery, state: FSM
 @dp.callback_query_handler(lambda c: c.data == 'scheduled_aircraft')
 async def process_delivery_handler(callback_query: types.CallbackQuery, state: FSMContext):
     """Ввод пользователем цены товара в рублях 🚀 Опция "1-3 дня"""
-    await bot.send_message(callback_query.from_user.id,
-                           "Введите цену товара в юанях 🇨🇳 (копейки указываются через точку):")
+    await bot.send_message(callback_query.from_user.id, message_text, parse_mode=types.ParseMode.HTML)
     usd_rate = get_currency_rate('USD')  # Курс Доллара к рублю
     data = await state.get_data()
     exchange_rate = data.get('exchange_rate', 0)  # Вес товара
-    shipping_cost = (35 * usd_rate) * exchange_rate
-    await state.update_data(shipping_cost=shipping_cost)  # Функция для обновления данных в состоянии, аналог return
+    min_shipping_cost = (35 * usd_rate) * exchange_rate
+    max_shipping_cost = (35 * usd_rate) * exchange_rate
+    # Функция для обновления данных в состоянии, аналог return
+    await state.update_data(shipping_cost_min=min_shipping_cost, shipping_cost_max=max_shipping_cost)
 
 
 @dp.callback_query_handler(lambda c: c.data == 'accelerated_by_truck')
 async def process_delivery_handler(callback_query: types.CallbackQuery, state: FSMContext):
     """Ввод пользователем цены товара в рублях 🚛 Опция "8-15 дней"""
-    await bot.send_message(callback_query.from_user.id,
-                           "Введите цену товара в юанях 🇨🇳 (копейки указываются через точку):")
+    await bot.send_message(callback_query.from_user.id, message_text, parse_mode=types.ParseMode.HTML)
     usd_rate = get_currency_rate('USD')  # Курс Доллара к рублю
     data = await state.get_data()
     exchange_rate = data.get('exchange_rate', 0)  # Вес товара
-    shipping_cost = (12 * usd_rate) * exchange_rate
-    await state.update_data(shipping_cost=shipping_cost)  # Функция для обновления данных в состоянии, аналог return
+    min_shipping_cost = (9 * usd_rate) * exchange_rate
+    max_shipping_cost = (12 * usd_rate) * exchange_rate
+    # Функция для обновления данных в состоянии, аналог return
+    await state.update_data(shipping_cost_min=min_shipping_cost, shipping_cost_max=max_shipping_cost)
 
 
 @dp.callback_query_handler(lambda c: c.data == 'a_regular_truck')
 async def process_delivery_handler(callback_query: types.CallbackQuery, state: FSMContext):
     """Ввод пользователем цены товара в рублях 🚚 Опция "20-30 дней"""
-    await bot.send_message(callback_query.from_user.id,
-                           "Введите цену товара в юанях 🇨🇳 (копейки указываются через точку):")
+    await bot.send_message(callback_query.from_user.id, message_text, parse_mode=types.ParseMode.HTML)
     usd_rate = get_currency_rate('USD')  # Курс Доллара к рублю
     data = await state.get_data()
     exchange_rate = data.get('exchange_rate', 0)  # Вес товара
-    shipping_cost = (6 * usd_rate) * exchange_rate
-    await state.update_data(shipping_cost=shipping_cost)  # Функция для обновления данных в состоянии, аналог return
+    min_shipping_cost = (4.5 * usd_rate) * exchange_rate
+    max_shipping_cost = (6 * usd_rate) * exchange_rate
+    # Функция для обновления данных в состоянии, аналог return
+    await state.update_data(shipping_cost_min=min_shipping_cost, shipping_cost_max=max_shipping_cost)
 
 
 @dp.message_handler(content_types=types.ContentType.TEXT)
@@ -176,11 +191,26 @@ async def process_price(message: types.Message, state: FSMContext):
         insurance_price = calculate_insurance_price(price)  # Расчет стоимости страховки
         commission_price = calculate_commission_price(price)  # Расчет стоимости комиссии
         data = await state.get_data()
-        shipping_cost = data.get('shipping_cost', 0)  # Доставка из Китая в Москву
-        # Рассчитываем итоговую стоимость приобретения
-        final_purchase_price = (price * cny_rate) + delivery_rub_cn + insurance_price + shipping_cost + commission_price
-        rounded_number = round(final_purchase_price, 2)  # Округляем до 2х знаков
-        message_text = f"<b>Общая стоимость: {rounded_number} руб.</b>\n\nДля возврата в начало нажмите /start"
+        shipping_cost_min = data.get('shipping_cost_min', 0)  # Минимальная стоимость доставки из Китая в Москву
+        shipping_cost_max = data.get('shipping_cost_max', 0)  # Максимальная стоимость доставки из Китая в Москву
+        # Рассчитываем итоговые стоимости приобретения
+        final_purchase_price_min = (price * cny_rate) + delivery_rub_cn + insurance_price + shipping_cost_min + \
+                                    commission_price
+        final_purchase_price_max = (price * cny_rate) + delivery_rub_cn + insurance_price + shipping_cost_max + \
+                                    commission_price
+        rounded_number_min = round(final_purchase_price_min, 2)  # Округляем до 2 знаков (минимальная стоимость)
+        rounded_number_max = round(final_purchase_price_max, 2)  # Округляем до 2 знаков (максимальная стоимость)
+
+        if rounded_number_min == rounded_number_max:
+            message_text = ("<b>Общая стоимость:</b>\n"
+                            f"💰 {rounded_number_min} руб.\n\n"
+                            "Для возврата в начало нажмите /start")
+        else:
+            message_text = ("<b>Общая стоимость:</b>\n"
+                            f"💰 Минимальная: {rounded_number_min} руб.\n"
+                            f"💰 Максимальная: {rounded_number_max} руб.\n\n"
+                            "Для возврата в начало нажмите /start")
+
         await bot.send_message(message.chat.id, message_text)
         await state.finish()
     except ValueError:
