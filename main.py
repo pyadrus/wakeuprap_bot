@@ -1,6 +1,6 @@
+import configparser
 import logging
 
-import requests
 from aiogram import Bot, Dispatcher
 from aiogram import executor
 from aiogram import types
@@ -8,42 +8,16 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher.filters import Command
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-bot_token = '6059128059:AAGwrIwJ3-qXTGlH0qX1hPvUWmQvJ2jfjQY'
+from services.exchange import get_currency_rate
+
+config = configparser.ConfigParser(empty_lines_in_values=False, allow_no_value=True)
+config.read("setting/config.ini")
+bot_token = config.get('BOT_TOKEN', 'BOT_TOKEN')
+
 bot = Bot(token=bot_token, parse_mode="HTML")
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 logging.basicConfig(level=logging.INFO)
-
-
-def get_exchange_rates():
-    """Получаем курс валют от ЦБ РФ"""
-    url = 'https://www.cbr-xml-daily.ru/daily_json.js'
-    response = requests.get(url)
-    data = response.json()
-    return data['Valute']
-
-
-def get_currency_rate(currency_code):
-    rates = get_exchange_rates()
-    if currency_code == 'USD':
-        return rates['USD']['Value']
-    elif currency_code == 'CNY':
-        return rates['CNY']['Value']
-    else:
-        return None
-
-
-usd_rate = get_currency_rate('USD')
-cny_rate = get_currency_rate('CNY')
-
-print(f'Курс доллара США: {usd_rate}')
-print(f'Курс юаня: {cny_rate}')
-
-
-def get_exchange_rate_usd():
-    response = requests.get("https://www.cbr-xml-daily.ru/latest.js")
-    data = response.json()
-    return data['rates']['USD']
 
 
 @dp.message_handler(Command('start'))
