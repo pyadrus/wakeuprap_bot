@@ -6,10 +6,10 @@ from aiogram import executor
 from aiogram import types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters import Command
 
-from keyboards.inline_keyboards import clothing_keyboard, delivery_keyboard
+from keyboards.inline_keyboards import clothing_keyboard, delivery_keyboard, greeting_keyboards
 from services.exchange import get_currency_rate
+from texts.greeting_texts import greeting_post, message_text_clothing, message_text_calculate
 from utils.validation import calculate_insurance_price, calculate_commission_price
 
 config = configparser.ConfigParser(empty_lines_in_values=False, allow_no_value=True)
@@ -22,21 +22,34 @@ dp = Dispatcher(bot, storage=storage)
 logging.basicConfig(level=logging.INFO)
 
 
-@dp.message_handler(Command('start'))
-async def start_handler(message: types.Message, state: FSMContext):
-    await state.reset_state()  # Сброс состояния бота
-    keyboard_clothes = clothing_keyboard()
-    await message.reply("Выберите тип товара:", reply_markup=keyboard_clothes)
+@dp.message_handler(commands=['start'])
+async def greeting(message: types.Message, state: FSMContext):
+    """Обработчик команды /start, он же пост приветствия"""
+    await state.reset_state()
+    keyboards_greeting = greeting_keyboards()
+    # Клавиатура для Калькулятора цен или Контактов
+    await message.reply(greeting_post, reply_markup=keyboards_greeting, disable_web_page_preview=True,
+                        parse_mode=types.ParseMode.HTML)
 
 
 """Тип одежды для определения веса"""
+
+
+@dp.callback_query_handler(lambda c: c.data == 'price_calculator')
+async def calculate_cost_handler(callback_query: types.CallbackQuery):
+    """Калькулятор цены"""
+    keyboard_clothes = clothing_keyboard()
+    # Клавиатура для выбора товара
+    await bot.send_message(callback_query.from_user.id, message_text_clothing, reply_markup=keyboard_clothes,
+                           parse_mode=types.ParseMode.HTML)
 
 
 @dp.callback_query_handler(lambda c: c.data == 'footwear')
 async def calculate_cost_handler(callback_query: types.CallbackQuery, state: FSMContext):
     """Обработчик расчета стоимости для 👟 Обувь"""
     delivery = delivery_keyboard()
-    await bot.send_message(callback_query.from_user.id, "Выберите тип доставки:", reply_markup=delivery)
+    await bot.send_message(callback_query.from_user.id, message_text_calculate, reply_markup=delivery,
+                           parse_mode=types.ParseMode.HTML)
     exchange_rate = 1
     await state.update_data(exchange_rate=exchange_rate)  # Функция для обновления данных в состоянии, аналог return
 
@@ -45,7 +58,8 @@ async def calculate_cost_handler(callback_query: types.CallbackQuery, state: FSM
 async def calculate_cost_handler(callback_query: types.CallbackQuery, state: FSMContext):
     """Обработчик расчета стоимости для 👖 Штаны"""
     delivery = delivery_keyboard()
-    await bot.send_message(callback_query.from_user.id, "Выберите тип доставки:", reply_markup=delivery)
+    await bot.send_message(callback_query.from_user.id, message_text_calculate, reply_markup=delivery,
+                           parse_mode=types.ParseMode.HTML)
     exchange_rate = 0.8
     await state.update_data(exchange_rate=exchange_rate)  # Функция для обновления данных в состоянии, аналог return
 
@@ -54,7 +68,8 @@ async def calculate_cost_handler(callback_query: types.CallbackQuery, state: FSM
 async def calculate_cost_handler(callback_query: types.CallbackQuery, state: FSMContext):
     """Обработчик расчета стоимости для 🥼 Худи"""
     delivery = delivery_keyboard()
-    await bot.send_message(callback_query.from_user.id, "Выберите тип доставки:", reply_markup=delivery)
+    await bot.send_message(callback_query.from_user.id, message_text_calculate, reply_markup=delivery,
+                           parse_mode=types.ParseMode.HTML)
     exchange_rate = 1
     await state.update_data(exchange_rate=exchange_rate)  # Функция для обновления данных в состоянии, аналог return
 
@@ -63,7 +78,8 @@ async def calculate_cost_handler(callback_query: types.CallbackQuery, state: FSM
 async def calculate_cost_handler(callback_query: types.CallbackQuery, state: FSMContext):
     """Обработчик расчета стоимости для 🧥 Пуховик (пух)"""
     delivery = delivery_keyboard()
-    await bot.send_message(callback_query.from_user.id, "Выберите тип доставки:", reply_markup=delivery)
+    await bot.send_message(callback_query.from_user.id, message_text_calculate, reply_markup=delivery,
+                           parse_mode=types.ParseMode.HTML)
     exchange_rate = 2
     await state.update_data(exchange_rate=exchange_rate)  # Функция для обновления данных в состоянии, аналог return
 
@@ -72,7 +88,8 @@ async def calculate_cost_handler(callback_query: types.CallbackQuery, state: FSM
 async def calculate_cost_handler(callback_query: types.CallbackQuery, state: FSMContext):
     """Обработчик расчета стоимости для 🧥 Пуховик (синтетика)"""
     delivery = delivery_keyboard()
-    await bot.send_message(callback_query.from_user.id, "Выберите тип доставки:", reply_markup=delivery)
+    await bot.send_message(callback_query.from_user.id, message_text_calculate, reply_markup=delivery,
+                           parse_mode=types.ParseMode.HTML)
     exchange_rate = 1.2
     await state.update_data(exchange_rate=exchange_rate)  # Функция для обновления данных в состоянии, аналог return
 
@@ -81,7 +98,8 @@ async def calculate_cost_handler(callback_query: types.CallbackQuery, state: FSM
 async def calculate_cost_handler(callback_query: types.CallbackQuery, state: FSMContext):
     """Обработчик расчета стоимости для 🎒 Рюкзак"""
     delivery = delivery_keyboard()
-    await bot.send_message(callback_query.from_user.id, "Выберите тип доставки:", reply_markup=delivery)
+    await bot.send_message(callback_query.from_user.id, message_text_calculate, reply_markup=delivery,
+                           parse_mode=types.ParseMode.HTML)
     exchange_rate = 0.6
     await state.update_data(exchange_rate=exchange_rate)  # Функция для обновления данных в состоянии, аналог return
 
@@ -90,7 +108,8 @@ async def calculate_cost_handler(callback_query: types.CallbackQuery, state: FSM
 async def calculate_cost_handler(callback_query: types.CallbackQuery, state: FSMContext):
     """Обработчик расчета стоимости для 👜 Сумка наплечная"""
     delivery = delivery_keyboard()
-    await bot.send_message(callback_query.from_user.id, "Выберите тип доставки:", reply_markup=delivery)
+    await bot.send_message(callback_query.from_user.id, message_text_calculate, reply_markup=delivery,
+                           parse_mode=types.ParseMode.HTML)
     exchange_rate = 0.2
     await state.update_data(exchange_rate=exchange_rate)  # Функция для обновления данных в состоянии, аналог return
 
@@ -99,7 +118,8 @@ async def calculate_cost_handler(callback_query: types.CallbackQuery, state: FSM
 async def calculate_cost_handler(callback_query: types.CallbackQuery, state: FSMContext):
     """Обработчик расчета стоимости для 👕 Лонгслив / майка"""
     delivery = delivery_keyboard()
-    await bot.send_message(callback_query.from_user.id, "Выберите тип доставки:", reply_markup=delivery)
+    await bot.send_message(callback_query.from_user.id, message_text_calculate, reply_markup=delivery,
+                           parse_mode=types.ParseMode.HTML)
     exchange_rate = 0.4
     await state.update_data(exchange_rate=exchange_rate)  # Функция для обновления данных в состоянии, аналог return
 
@@ -109,42 +129,46 @@ async def calculate_cost_handler(callback_query: types.CallbackQuery, state: FSM
 
 @dp.callback_query_handler(lambda c: c.data == 'scheduled_aircraft')
 async def process_delivery_handler(callback_query: types.CallbackQuery, state: FSMContext):
-    """Ввод пользователем цены товара в рублях"""
+    """Ввод пользователем цены товара в рублях 🚀 Опция "1-3 дня"""
     await bot.send_message(callback_query.from_user.id,
                            "Введите цену товара в юанях 🇨🇳 (копейки указываются через точку):")
     usd_rate = get_currency_rate('USD')  # Курс Доллара к рублю
     data = await state.get_data()
-    exchange_rate = data.get('exchange_rate', 0)
+    exchange_rate = data.get('exchange_rate', 0)  # Вес товара
     shipping_cost = (35 * usd_rate) * exchange_rate
     await state.update_data(shipping_cost=shipping_cost)  # Функция для обновления данных в состоянии, аналог return
 
 
-@dp.callback_query_handler(lambda c: c.data == 'scheduled_aircraft')
+@dp.callback_query_handler(lambda c: c.data == 'accelerated_by_truck')
 async def process_delivery_handler(callback_query: types.CallbackQuery, state: FSMContext):
-    """Ввод пользователем цены товара в рублях"""
+    """Ввод пользователем цены товара в рублях 🚛 Опция "8-15 дней"""
     await bot.send_message(callback_query.from_user.id,
                            "Введите цену товара в юанях 🇨🇳 (копейки указываются через точку):")
     usd_rate = get_currency_rate('USD')  # Курс Доллара к рублю
     data = await state.get_data()
-    exchange_rate = data.get('exchange_rate', 0)
+    exchange_rate = data.get('exchange_rate', 0)  # Вес товара
     shipping_cost = (12 * usd_rate) * exchange_rate
     await state.update_data(shipping_cost=shipping_cost)  # Функция для обновления данных в состоянии, аналог return
 
 
 @dp.callback_query_handler(lambda c: c.data == 'a_regular_truck')
 async def process_delivery_handler(callback_query: types.CallbackQuery, state: FSMContext):
-    """Ввод пользователем цены товара в рублях"""
+    """Ввод пользователем цены товара в рублях 🚚 Опция "20-30 дней"""
     await bot.send_message(callback_query.from_user.id,
                            "Введите цену товара в юанях 🇨🇳 (копейки указываются через точку):")
     usd_rate = get_currency_rate('USD')  # Курс Доллара к рублю
     data = await state.get_data()
-    exchange_rate = data.get('exchange_rate', 0)
+    exchange_rate = data.get('exchange_rate', 0)  # Вес товара
     shipping_cost = (6 * usd_rate) * exchange_rate
     await state.update_data(shipping_cost=shipping_cost)  # Функция для обновления данных в состоянии, аналог return
 
 
 @dp.message_handler(content_types=types.ContentType.TEXT)
 async def process_price(message: types.Message, state: FSMContext):
+    """
+    Конечный расчет стоимости доставки: Цена товара + Доставка Poizon до склада в Китае + Страховка +
+                                        Доставка из Китая в Москву + Комиссия = Конечная стоимость товара.
+    """
     try:
         cny_rate = get_currency_rate('CNY')  # Курс Юаня к рублю
         price = float(message.text)  # Цена товара в Юанях введенная пользователем
@@ -152,8 +176,7 @@ async def process_price(message: types.Message, state: FSMContext):
         insurance_price = calculate_insurance_price(price)  # Расчет стоимости страховки
         commission_price = calculate_commission_price(price)  # Расчет стоимости комиссии
         data = await state.get_data()
-        shipping_cost = data.get('shipping_cost', 0)
-
+        shipping_cost = data.get('shipping_cost', 0)  # Доставка из Китая в Москву
         # Рассчитываем итоговую стоимость приобретения
         final_purchase_price = (price * cny_rate) + delivery_rub_cn + insurance_price + shipping_cost + commission_price
         rounded_number = round(final_purchase_price, 2)  # Округляем до 2х знаков

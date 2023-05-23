@@ -17,7 +17,3 @@ def get_currency_rate(currency_code):
         return rates['CNY']['Value']
     else:
         return None
-
-
-# usd_rate = get_currency_rate('USD')
-# cny_rate = get_currency_rate('CNY')

@@ -1,6 +1,14 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
+def greeting_keyboards():
+    """Клавиатуры поста приветствия"""
+    keyboards_greeting = InlineKeyboardMarkup()
+    price_calculator = InlineKeyboardButton(text='Калькулятор цен', callback_data='price_calculator')
+    contacts = InlineKeyboardButton(text='Контакты', callback_data='contacts')
+    keyboards_greeting.row(price_calculator, contacts)
+    return keyboards_greeting
+
 def clothing_keyboard():
     """Клавиатура одежды"""
     keyboard_clothes = InlineKeyboardMarkup()
@@ -12,7 +20,7 @@ def clothing_keyboard():
     backpack = InlineKeyboardButton(text='🎒 Рюкзак', callback_data='backpack')
     shoulder_bag = InlineKeyboardButton(text='👜 Сумка наплечная', callback_data='shoulder_bag')
     longsleeve = InlineKeyboardButton(text='👕 Лонгслив / майка', callback_data='longsleeve')
-    keyboard_clothes.row(footwear,trousers)
+    keyboard_clothes.row(footwear, trousers)
     keyboard_clothes.row(hoodies, down_jacket_button)
     keyboard_clothes.row(down_jacket_synthetic, backpack)
     keyboard_clothes.row(shoulder_bag, longsleeve)
@@ -32,5 +40,6 @@ def delivery_keyboard():
 
 
 if __name__ == '__main__':
+    greeting_keyboards()
     clothing_keyboard()
     delivery_keyboard()
