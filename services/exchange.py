@@ -19,8 +19,5 @@ def get_currency_rate(currency_code):
         return None
 
 
-usd_rate = get_currency_rate('USD')
-cny_rate = get_currency_rate('CNY')
-
-print(f'Курс доллара США: {usd_rate}')
-print(f'Курс юаня: {cny_rate}')
+# usd_rate = get_currency_rate('USD')
+# cny_rate = get_currency_rate('CNY')
