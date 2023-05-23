@@ -5,9 +5,10 @@ from aiogram import Bot, Dispatcher
 from aiogram import executor
 from aiogram import types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Command
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+from keyboards.inline_keyboards import clothing_keyboard, delivery_keyboard
 from services.exchange import get_currency_rate
 
 config = configparser.ConfigParser(empty_lines_in_values=False, allow_no_value=True)
@@ -22,23 +23,15 @@ logging.basicConfig(level=logging.INFO)
 
 @dp.message_handler(Command('start'))
 async def start_handler(message: types.Message):
-    keyboard = InlineKeyboardMarkup()
-    down_jacket_button = InlineKeyboardButton(text='🧥 Пуховик (пух)', callback_data='down_jacket_down')
-    keyboard.row(down_jacket_button)
-    await message.reply("Выберите тип товара:", reply_markup=keyboard)
+    keyboard_clothes = clothing_keyboard()
+    await message.reply("Выберите тип товара:", reply_markup=keyboard_clothes)
 
 
 @dp.callback_query_handler(lambda c: c.data == 'down_jacket_down')
 async def down_jacket_handler(callback_query: types.CallbackQuery):
     """Обработчик расчета стоимости для пуховика"""
-    keyboard = InlineKeyboardMarkup()
-    scheduled_aircraft_button = InlineKeyboardButton(text='🚀 Опция "1-3 дня"', callback_data='scheduled_aircraft')
-    accelerated_by_truck = InlineKeyboardButton(text='🚛 Опция "8-15 дней"', callback_data='accelerated_by_truck')
-    a_regular_truck = InlineKeyboardButton(text='🚚 Опция "20-30 дней"', callback_data='a_regular_truck')
-    keyboard.row(scheduled_aircraft_button)
-    keyboard.row(accelerated_by_truck)
-    keyboard.row(a_regular_truck)
-    await bot.send_message(callback_query.from_user.id, "Выберите тип доставки:", reply_markup=keyboard)
+    delivery = delivery_keyboard()
+    await bot.send_message(callback_query.from_user.id, "Выберите тип доставки:", reply_markup=delivery)
 
 
 def calculate_insurance_price(price):
@@ -72,7 +65,7 @@ async def scheduled_aircraft_handler(callback_query: types.CallbackQuery):
 
 
 @dp.message_handler(content_types=types.ContentType.TEXT)
-async def process_price(message: types.Message):
+async def process_price(message: types.Message, state: FSMContext):
     try:
         cny_rate = get_currency_rate('CNY')  # Курс Юаня к рублю
         usd_rate = get_currency_rate('USD')  # Курс Доллара к рублю
@@ -86,6 +79,7 @@ async def process_price(message: types.Message):
         rounded_number = round(final_purchase_price, 2)  # Округляем до 2х знаков
         message_text = f"<b>Общая стоимость: {rounded_number} руб.</b>\n\nДля возврата в начало нажмите /start"
         await bot.send_message(message.chat.id, message_text)
+        await state.finish()
     except ValueError:
         await bot.send_message(message.chat.id, "Пожалуйста, введите числовое значение.")
 
