@@ -146,10 +146,9 @@ async def process_delivery_handler(callback_query: types.CallbackQuery, state: F
     usd_rate = get_currency_rate('USD')  # Курс Доллара к рублю
     data = await state.get_data()
     exchange_rate = data.get('exchange_rate', 0)  # Вес товара
-    min_shipping_cost = (35 * usd_rate) * exchange_rate
-    max_shipping_cost = (35 * usd_rate) * exchange_rate
+    shipping_cost = (35 * usd_rate) * exchange_rate
     # Функция для обновления данных в состоянии, аналог return
-    await state.update_data(shipping_cost_min=min_shipping_cost, shipping_cost_max=max_shipping_cost)
+    await state.update_data(shipping_cost_min=shipping_cost)
 
 
 @dp.callback_query_handler(lambda c: c.data == 'accelerated_by_truck')
@@ -159,10 +158,9 @@ async def process_delivery_handler(callback_query: types.CallbackQuery, state: F
     usd_rate = get_currency_rate('USD')  # Курс Доллара к рублю
     data = await state.get_data()
     exchange_rate = data.get('exchange_rate', 0)  # Вес товара
-    min_shipping_cost = (9 * usd_rate) * exchange_rate
-    max_shipping_cost = (12 * usd_rate) * exchange_rate
+    shipping_cost = (12 * usd_rate) * exchange_rate
     # Функция для обновления данных в состоянии, аналог return
-    await state.update_data(shipping_cost_min=min_shipping_cost, shipping_cost_max=max_shipping_cost)
+    await state.update_data(shipping_cost_min=shipping_cost)
 
 
 @dp.callback_query_handler(lambda c: c.data == 'a_regular_truck')
@@ -172,10 +170,9 @@ async def process_delivery_handler(callback_query: types.CallbackQuery, state: F
     usd_rate = get_currency_rate('USD')  # Курс Доллара к рублю
     data = await state.get_data()
     exchange_rate = data.get('exchange_rate', 0)  # Вес товара
-    min_shipping_cost = (4.5 * usd_rate) * exchange_rate
-    max_shipping_cost = (6 * usd_rate) * exchange_rate
+    shipping_cost = (6 * usd_rate) * exchange_rate
     # Функция для обновления данных в состоянии, аналог return
-    await state.update_data(shipping_cost_min=min_shipping_cost, shipping_cost_max=max_shipping_cost)
+    await state.update_data(shipping_cost=shipping_cost)
 
 
 @dp.message_handler(content_types=types.ContentType.TEXT)
@@ -191,25 +188,14 @@ async def process_price(message: types.Message, state: FSMContext):
         insurance_price = calculate_insurance_price(price)  # Расчет стоимости страховки
         commission_price = calculate_commission_price(price)  # Расчет стоимости комиссии
         data = await state.get_data()
-        shipping_cost_min = data.get('shipping_cost_min', 0)  # Минимальная стоимость доставки из Китая в Москву
         shipping_cost_max = data.get('shipping_cost_max', 0)  # Максимальная стоимость доставки из Китая в Москву
         # Рассчитываем итоговые стоимости приобретения
-        final_purchase_price_min = (price * cny_rate) + delivery_rub_cn + insurance_price + shipping_cost_min + \
-                                    commission_price
-        final_purchase_price_max = (price * cny_rate) + delivery_rub_cn + insurance_price + shipping_cost_max + \
-                                    commission_price
-        rounded_number_min = round(final_purchase_price_min, 2)  # Округляем до 2 знаков (минимальная стоимость)
-        rounded_number_max = round(final_purchase_price_max, 2)  # Округляем до 2 знаков (максимальная стоимость)
+        final_purchase_price = (price * cny_rate) + delivery_rub_cn + insurance_price + shipping_cost_max + \
+                                commission_price
+        rounded_number = round(final_purchase_price, 2)  # Округляем до 2 знаков (максимальная стоимость)
 
-        if rounded_number_min == rounded_number_max:
-            message_text = ("<b>Общая стоимость:</b>\n"
-                            f"💰 {rounded_number_min} руб.\n\n"
-                            "Для возврата в начало нажмите /start")
-        else:
-            message_text = ("<b>Общая стоимость:</b>\n"
-                            f"💰 Минимальная: {rounded_number_min} руб.\n"
-                            f"💰 Максимальная: {rounded_number_max} руб.\n\n"
-                            "Для возврата в начало нажмите /start")
+        message_text = (f"<b>Общая стоимость заказа ≈ {rounded_number} руб.</b>\n"
+                        "\nДля возврата в начало нажмите /start")
 
         await bot.send_message(message.chat.id, message_text)
         await state.finish()

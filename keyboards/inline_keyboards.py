@@ -31,9 +31,9 @@ def clothing_keyboard():
 def delivery_keyboard():
     """Клавиатура доставки"""
     delivery_keyboard = InlineKeyboardMarkup()
-    scheduled_aircraft_button = InlineKeyboardButton(text='🚀 Опция "1-3 дня"', callback_data='scheduled_aircraft')
-    accelerated_by_truck = InlineKeyboardButton(text='🚛 Опция "8-15 дней"', callback_data='accelerated_by_truck')
-    a_regular_truck = InlineKeyboardButton(text='🚚 Опция "20-30 дней"', callback_data='a_regular_truck')
+    scheduled_aircraft_button = InlineKeyboardButton(text='🚀 1-3 дня (рейсовый самолет)"', callback_data='scheduled_aircraft')
+    accelerated_by_truck = InlineKeyboardButton(text='🚛 8-15 дней (ускоренный фурой)"', callback_data='accelerated_by_truck')
+    a_regular_truck = InlineKeyboardButton(text='🚚 20-30 дней (обычная фура)"', callback_data='a_regular_truck')
     delivery_keyboard.row(scheduled_aircraft_button)
     delivery_keyboard.row(accelerated_by_truck)
     delivery_keyboard.row(a_regular_truck)
