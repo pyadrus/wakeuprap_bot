@@ -10,7 +10,7 @@ from aiogram.dispatcher import FSMContext
 from keyboards.inline_keyboards import clothing_keyboard, delivery_keyboard, greeting_keyboards
 from services.exchange import get_currency_rate
 from texts.greeting_texts import greeting_post, message_text_clothing, message_text_calculate, contacts_post, \
-    message_text
+    message_text, message_text_faq
 from utils.validation import calculate_insurance_price, calculate_commission_price
 
 config = configparser.ConfigParser(empty_lines_in_values=False, allow_no_value=True)
@@ -33,6 +33,16 @@ async def greeting(message: types.Message, state: FSMContext):
     # Клавиатура для Калькулятора цен или Контактов
     await message.reply(greeting_post, reply_markup=keyboards_greeting, disable_web_page_preview=True,
                         parse_mode=types.ParseMode.HTML)
+
+
+"""FAQ"""
+
+
+@dp.callback_query_handler(lambda c: c.data == 'faq')
+async def faq_handler(callback_query: types.CallbackQuery):
+    """FAG"""
+    # disable_web_page_preview=True - скрыть предпросмотр ссылок в Telegram
+    await bot.send_message(callback_query.from_user.id, message_text_faq, disable_web_page_preview=True, parse_mode=types.ParseMode.HTML)
 
 
 """Контакты для связи"""
@@ -191,7 +201,7 @@ async def process_price(message: types.Message, state: FSMContext):
         shipping_cost_max = data.get('shipping_cost_max', 0)  # Максимальная стоимость доставки из Китая в Москву
         # Рассчитываем итоговые стоимости приобретения
         final_purchase_price = (price * cny_rate) + delivery_rub_cn + insurance_price + shipping_cost_max + \
-                                commission_price
+                               commission_price
         rounded_number = round(final_purchase_price, 2)  # Округляем до 2 знаков (максимальная стоимость)
 
         message_text = (f"<b>Общая стоимость заказа ≈ {rounded_number} руб.</b>\n"
