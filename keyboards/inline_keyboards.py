@@ -23,12 +23,12 @@ def clothing_keyboard():
     backpack = InlineKeyboardButton(text='🎒 Рюкзак', callback_data='backpack')
     shoulder_bag = InlineKeyboardButton(text='👜 Сумка наплечная', callback_data='shoulder_bag')
     longsleeve = InlineKeyboardButton(text='👕 Лонгслив / майка', callback_data='longsleeve')
-    tehnics = InlineKeyboardButton(text='📱 Техника', callback_data='technics')
+    technics = InlineKeyboardButton(text='📱 Техника', callback_data='technics')
     keyboard_clothes.row(footwear, trousers)  # Кнопка одежды
     keyboard_clothes.row(hoodies, down_jacket_button)  # Кнопка одежды
     keyboard_clothes.row(down_jacket_synthetic, backpack)  # Кнопка одежды
     keyboard_clothes.row(shoulder_bag, longsleeve)  # Кнопка одежды
-    keyboard_clothes.row(tehnics)  # Inline кнопка техники
+    keyboard_clothes.row(technics)  # Inline кнопка техники
     return keyboard_clothes
 
 
@@ -36,11 +36,11 @@ def delivery_keyboard_technics():
     """Клавиатура техники доставки"""
     technics_delivery_keyboard = InlineKeyboardMarkup()
     technics_aircraft_button = InlineKeyboardButton(text='🚀 1-3 дня (рейсовый самолет)',
-                                                   callback_data='technics_aircraft')
+                                                    callback_data='technics_aircraft')
     technics_accelerated_by_truck = InlineKeyboardButton(text='🚛 8-15 дней (ускоренной фурой)',
                                                          callback_data='technics_accelerated_by_truck')
     technics_a_regular_truck = InlineKeyboardButton(text='🚚 20-30 дней (обычной фурой)',
-                                                   callback_data='technics_a_regular_truck')
+                                                    callback_data='technics_a_regular_truck')
     technics_delivery_keyboard.row(technics_aircraft_button)
     technics_delivery_keyboard.row(technics_accelerated_by_truck)
     technics_delivery_keyboard.row(technics_a_regular_truck)
@@ -49,17 +49,17 @@ def delivery_keyboard_technics():
 
 def delivery_keyboard():
     """Клавиатура доставки"""
-    delivery_keyboard = InlineKeyboardMarkup()
+    deliver_keyboard = InlineKeyboardMarkup()
     scheduled_aircraft_button = InlineKeyboardButton(text='🚀 1-3 дня (рейсовый самолет)',
                                                      callback_data='scheduled_aircraft')
     accelerated_by_truck = InlineKeyboardButton(text='🚛 8-15 дней (ускоренной фурой)',
                                                 callback_data='accelerated_by_truck')
     a_regular_truck = InlineKeyboardButton(text='🚚 20-30 дней (обычной фурой)',
                                            callback_data='a_regular_truck')
-    delivery_keyboard.row(scheduled_aircraft_button)
-    delivery_keyboard.row(accelerated_by_truck)
-    delivery_keyboard.row(a_regular_truck)
-    return delivery_keyboard
+    deliver_keyboard.row(scheduled_aircraft_button)
+    deliver_keyboard.row(accelerated_by_truck)
+    deliver_keyboard.row(a_regular_truck)
+    return deliver_keyboard
 
 
 if __name__ == '__main__':
