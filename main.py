@@ -1,5 +1,6 @@
 from aiogram import executor
 
+from handlers.contacts import contacts_handlers
 from handlers.faq import faq_handlers
 from handlers.greeting import greeting_handler
 from handlers.price_calculator import price_calculator_handler
@@ -11,6 +12,7 @@ def main():
     price_calculator_handler()
     greeting_handler()
     faq_handlers()
+    contacts_handlers()
 
 
 if __name__ == '__main__':

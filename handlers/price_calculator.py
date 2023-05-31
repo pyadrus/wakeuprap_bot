@@ -2,14 +2,12 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
 
-from keyboards.inline_keyboards import clothing_keyboard, delivery_keyboard_technics  # Клавиатура одежды
-from keyboards.inline_keyboards import delivery_keyboard  # Клавиатура доставки
+from keyboards.clothing_keyboard import clothing_keyboard
+from keyboards.delivery_keyboard import delivery_keyboard, delivery_keyboard_technics
+from messages.message_text_calculate import message_text_calculate, message_text_price, message_text_kg
+from messages.message_text_clothing import message_text_clothing
 from services.exchange import get_currency_rate  # Получение курса валют
 from system.dispatcher import dp, bot
-from texts.greeting_texts import message_text_calculate  # Текст калькулятора
-from texts.greeting_texts import message_text_clothing  # Текст одежды
-from texts.greeting_texts import message_text_kg  # Контакт пост
-from texts.greeting_texts import message_text_price  # Сообщение пост
 from utils.validation import calculate_insurance_price, calculate_commission_price
 
 

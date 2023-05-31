@@ -1,7 +1,7 @@
 from aiogram import types
 
+from messages.contacts_post import contacts_post
 from system.dispatcher import dp, bot
-from texts.greeting_texts import contacts_post
 
 
 @dp.callback_query_handler(lambda c: c.data == 'contacts')

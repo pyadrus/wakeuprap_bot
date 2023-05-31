@@ -1,7 +1,7 @@
 from aiogram import types
 
+from messages.message_text_faq import message_text_faq
 from system.dispatcher import dp, bot
-from texts.greeting_texts import message_text_faq
 
 """FAQ"""
 

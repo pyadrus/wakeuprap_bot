@@ -1,9 +1,9 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from keyboards.inline_keyboards import greeting_keyboards
+from keyboards.greeting_keyboards import greeting_keyboards
+from messages.greeting_post import greeting_post
 from system.dispatcher import dp
-from texts.greeting_texts import greeting_post
 
 
 @dp.message_handler(commands=['start'])
