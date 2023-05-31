@@ -227,10 +227,9 @@ async def process_price(message: types.Message, state: FSMContext):
         insurance_price = calculate_insurance_price(price)  # Расчет стоимости страховки
         commission_price = calculate_commission_price(price)  # Расчет стоимости комиссии
         data = await state.get_data()
-        shipping_cost_max = data.get('shipping_cost', 0)  # Максимальная стоимость доставки из Китая в Москву
+        shipping_cost = data.get('shipping_cost', 0)  # Максимальная стоимость доставки из Китая в Москву
         # Рассчитываем итоговые стоимости приобретения
-        final_purchase_price = (price * cny_rate) + delivery_rub_cn + insurance_price + shipping_cost_max + \
-                               commission_price
+        final_purchase_price = (price * cny_rate) + delivery_rub_cn + insurance_price + shipping_cost + commission_price
         rounded_number = round(final_purchase_price, 2)  # Округляем до 2 знаков (максимальная стоимость)
 
         message_text = (f"<b>Общая стоимость заказа ≈ {rounded_number} руб.</b>\n"
