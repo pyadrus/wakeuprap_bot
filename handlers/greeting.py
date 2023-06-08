@@ -113,8 +113,9 @@ class MakingAnOrder(StatesGroup):
 @dp.callback_query_handler(lambda c: c.data == "making_an_order")
 async def order(callback_query: types.CallbackQuery, state: FSMContext):
     await state.reset_state()
-    await bot.send_message(callback_query.from_user.id, "Привет! Я бот для сбора данных заказа.")
-    await bot.send_message(callback_query.from_user.id, "Пожалуйста, введите ваше имя:")
+    greeting_post_on = ("Привет! Я бот для сбора данных заказа.\n\n"
+                        "Пожалуйста, введите ваше имя:")
+    await bot.send_message(callback_query.from_user.id, greeting_post_on)
     await MakingAnOrder.write_name.set()
 
 
@@ -127,13 +128,15 @@ async def write_name(message: types.Message, state: FSMContext):
     await bot.send_message(message.from_user.id, "Пожалуйста, введите ваш номер телефона:")
 
 
-# Обработчик ввода номера телефона
+# Обработчик номера телефона
 @dp.message_handler(state=MakingAnOrder.write_phone)
 async def write_phone(message: types.Message, state: FSMContext):
     phone = message.text
     await state.update_data(phone=phone)
     await MakingAnOrder.next()
-    await bot.send_message(message.from_user.id, "Пожалуйста, введите ссылку на товар:")
+    linc = (f"<a href='https://telegra.ph/Kak-sdelat-zakaz-05-03-2'>Как скопировать ссылку на товар?</a>\n\n"
+            f"Пожалуйста, введите ссылку на товар:")
+    await bot.send_message(message.from_user.id, linc, disable_web_page_preview=True, parse_mode=types.ParseMode.HTML)
 
 
 # Обработчик ввода ссылки на товар
@@ -185,11 +188,35 @@ async def write_price(message: types.Message, state: FSMContext):
                    (user_id, name, phone, link, size, color, price, dat))
     conn.commit()
     await state.finish()
-    order_details = f"Имя: {name}\nНомер телефона: {phone}\nСсылка на товар: {link}\nРазмер: {size}\nЦвет: {color}\nЦена: {price}"
-    await bot.send_message(message.from_user.id, f"Спасибо за ваш заказ! Он был сохранен в нашей базе данных.")
-    await bot.send_message(message.from_user.id, order_details)
-    admin_id = 5958542955  # Poizon менеджер
-    await bot.send_message(admin_id, order_details)
+    order_details = (f"Спасибо за ваш заказ!\n\n"
+                     f"Данные заказа были отправлены нашему менеджеру @poizon_commerce_manager\n\n"
+                     f""f"Имя: {name}\n"
+                     f"Номер телефона: {phone}\n"
+                     f"Ссылка на товар: {link}\n"
+                     f"Размер: {size}\n"
+                     f"Цвет: {color}\n"
+                     f"Цена: {price}"
+                     "\n\nДля возврата в начало нажмите /start")
+    await bot.send_message(message.from_user.id, order_details, disable_web_page_preview=True)
+
+    # Определение данных о пользователе для отправки администратору
+    user = message.from_user
+    user_info = f"{user.first_name} "
+    if user.last_name:
+        user_info += f"{user.last_name} "
+    if user.username:
+        user_info += f"@{user.username}\n"
+
+    # admin_id = 5958542955  # @PyAdminRUS
+    admin_id = 5837917794  # Poizon менеджер
+
+    order_details_admin = (f"Заказ от: {user_info}\n"
+                           f"Номер телефона: {phone}\n"
+                           f"Ссылка на товар: {link}\n"
+                           f"Размер: {size}\n"
+                           f"Цвет: {color}\n"
+                           f"Цена: {price}")
+    await bot.send_message(admin_id, order_details_admin, disable_web_page_preview=True)
 
 
 # Функция для создания файла Excel с данными заказов
