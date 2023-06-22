@@ -13,32 +13,15 @@ from messages.greeting_post import greeting_post
 from system.dispatcher import dp, bot
 
 # Подключение к базе данных SQLite
-conn = sqlite3.connect('orders.db')
+conn = sqlite3.connect('setting/orders.db')
 cursor = conn.cursor()
-
 # Создание таблицы для заказов
-cursor.execute('''CREATE TABLE IF NOT EXISTS orders
-                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                  user_id INTEGER,
-                  name TEXT,
-                  phone TEXT,
-                  link TEXT,
-                  size TEXT,
-                  color TEXT,
-                  price TEXT,
-                  date TEXT)''')
+cursor.execute('''CREATE TABLE IF NOT EXISTS orders (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER,
+                                                     name TEXT, phone TEXT, link TEXT, size TEXT, color TEXT,
+                                                     price TEXT, date TEXT)''')
 # Создаем таблицу, если она не существует
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER,
-        first_name TEXT,
-        last_name TEXT,
-        username TEXT,
-        date TEXT
-    )
-''')
-
+cursor.execute('''CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER,
+                                                    first_name TEXT, last_name TEXT, username TEXT, date TEXT)''')
 conn.commit()
 
 
@@ -51,9 +34,9 @@ async def greeting(message: types.Message, state: FSMContext):
     current_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Записываем данные пользователя в базу данных
-    cursor.execute('''INSERT INTO users (user_id, first_name, last_name, username, date) VALUES (?, ?, ?, ?, ?)''', (
-        message.from_user.id, message.from_user.first_name, message.from_user.last_name, message.from_user.username,
-        current_date))
+    cursor.execute('''INSERT INTO users (user_id, first_name, last_name, username, date) VALUES (?, ?, ?, ?, ?)''',
+                   (message.from_user.id, message.from_user.first_name, message.from_user.last_name,
+                    message.from_user.username, current_date))
     conn.commit()
 
     print(f'Привет! нажали на кнопку /start {message.from_user.id, message.from_user.username, current_date}')
@@ -110,7 +93,7 @@ class MakingAnOrder(StatesGroup):
     write_price = State()
 
 
-@dp.callback_query_handler(lambda c: c.data == "making_an_order")
+@dp.callback_query_handler(lambda c: c.data == "make_an_order")
 async def order(callback_query: types.CallbackQuery, state: FSMContext):
     await state.reset_state()
     greeting_post_on = ("Привет! Я бот для сбора данных заказа.\n\n"
@@ -134,8 +117,7 @@ async def write_phone(message: types.Message, state: FSMContext):
     phone = message.text
     await state.update_data(phone=phone)
     await MakingAnOrder.next()
-    linc = (f"<a href='https://telegra.ph/Kak-sdelat-zakaz-05-03-2'>Как скопировать ссылку на товар?</a>\n\n"
-            f"Пожалуйста, введите ссылку на товар:")
+    linc = f"Пожалуйста, введите ссылку на товар:"
     await bot.send_message(message.from_user.id, linc, disable_web_page_preview=True, parse_mode=types.ParseMode.HTML)
 
 
@@ -189,7 +171,7 @@ async def write_price(message: types.Message, state: FSMContext):
     conn.commit()
     await state.finish()
     order_details = (f"Спасибо за ваш заказ!\n\n"
-                     f"Данные заказа были отправлены нашему менеджеру @poizon_commerce_manager\n\n"
+                     f"Данные заказа были отправлены нашему менеджеру\n\n"
                      f""f"Имя: {name}\n"
                      f"Номер телефона: {phone}\n"
                      f"Ссылка на товар: {link}\n"
@@ -207,8 +189,8 @@ async def write_price(message: types.Message, state: FSMContext):
     if user.username:
         user_info += f"@{user.username}\n"
 
-    # admin_id = 5958542955  # @PyAdminRUS
-    admin_id = 5837917794  # Poizon менеджер
+    # admin_id = 5958542955  # Poizon менеджер
+    admin_id = 5837917794  # @PyAdminRUS
 
     order_details_admin = (f"Заказ от: {user_info}\n"
                            f"Номер телефона: {phone}\n"
