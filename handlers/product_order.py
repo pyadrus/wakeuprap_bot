@@ -1,5 +1,6 @@
 # Импортируем модуль для работы с базой данных SQLite
 import datetime
+import sqlite3
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
@@ -92,13 +93,23 @@ async def write_price(message: types.Message, state: FSMContext):
     color = data.get('color')
     price = data.get('price')
     current_time = datetime.datetime.now().strftime("%d%Y%H%M")
-    order_number = f"{current_time}{user_id}"
+    order_number = f"{user_id}{current_time}"
     creating_table_for_orders()  # Создание таблицы для заказов
     conn, cursor = connecting_database()
     # Сохранение данных в базу данных
     cursor.execute("INSERT INTO orders "
                    "(user_id, name, phone, link, size, color, price, order_number, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                   (user_id, name, phone, link, size, color, price, order_number,  dat))
+                   (user_id, name, phone, link, size, color, price, order_number, dat))
+    in_processing = None
+    sent = None
+    cancelled = None
+    refund = None
+    completed = None
+    # Обновляем соответствующий статус заказа в базе данных
+    cursor.execute("INSERT INTO order_status (order_number, in_processing, sent, cancelled, refund, completed) "
+                   "VALUES (?, ?, ?, ?, ?, ?)",
+                   (order_number, in_processing, sent, cancelled, refund, completed))
+
     conn.commit()
     await state.finish()
 
@@ -110,7 +121,7 @@ async def write_price(message: types.Message, state: FSMContext):
                      f"Размер: {size}\n"
                      f"Цвет: {color}\n"
                      f"Цена: {price}\n"
-                     f"Номер заказа: {str(user_id)+str(current_time)}"
+                     f"Номер заказа: {str(user_id) + str(current_time)}"
                      "\n\nДля возврата в начало нажмите /start")
     await bot.send_message(message.from_user.id, order_details, disable_web_page_preview=True)
 
@@ -131,7 +142,7 @@ async def write_price(message: types.Message, state: FSMContext):
                            f"Размер: {size}\n"
                            f"Цвет: {color}\n"
                            f"Цена: {price}\n"
-                           f"Номер заказа: {str(user_id)+str(current_time)}")
+                           f"Номер заказа: {str(user_id) + str(current_time)}")
     await bot.send_message(admin_id, order_details_admin, disable_web_page_preview=True)
 
 
