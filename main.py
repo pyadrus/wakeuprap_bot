@@ -11,12 +11,10 @@ from system.dispatcher import dp
 def main():
     executor.start_polling(dp, skip_updates=True)
     price_calculator_handler()  # Расчет стоимости
-    greeting_handler()
-    # faq_handlers()
-    # contacts_handlers()
-    product_order_handler()
-    admin_handler()
-    user_handler()
+    greeting_handler()  # Начальное приветствие
+    product_order_handler()  # Заказ товара пользователем
+    admin_handler()  # Админ панель
+    user_handler()  # Проверка статуса заказа пользователем
 
 
 if __name__ == '__main__':

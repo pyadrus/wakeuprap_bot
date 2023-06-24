@@ -1,6 +1,5 @@
 # Импортируем модуль для работы с базой данных SQLite
 import datetime
-import sqlite3
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
