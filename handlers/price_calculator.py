@@ -58,7 +58,7 @@ async def process_price(message: types.Message, state: FSMContext):
         data = await state.get_data()  # Получаем данные из хранилища
         shipping_cost = data.get('shipping_cost', 0)  # Получаем стоимость доставки
         # Рассчитываем итоговую стоимость приобретения
-        final_purchase_price = (price * shipping_cost) + insurance_price + commission_price
+        final_purchase_price = (price * shipping_cost) + float(insurance_price) + float(commission_price)
         rounded_number = round(final_purchase_price, 2)  # Округляем до 2 знаков (максимальная стоимость)
 
         message_text = (f"<b>Общая стоимость заказа ≈ {rounded_number} руб.</b>\n"

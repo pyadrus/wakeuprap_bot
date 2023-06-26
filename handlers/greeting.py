@@ -55,7 +55,7 @@ async def greeting(message: types.Message, state: FSMContext):
     conn.commit()
 
     print(f'Привет! нажали на кнопку /start {message.from_user.id, message.from_user.username, current_date}')
-    if message.from_user.id not in [5837917794]:  # Если это не админ, то выводим предупреждение
+    if message.from_user.id not in [5837917794, 1062323239]:  # Если это не админ, то выводим предупреждение
         await message.reply('У вас нет доступа к этой команде.')
         return
     keyboards_greeting_admin = greeting_keyboards_admin()

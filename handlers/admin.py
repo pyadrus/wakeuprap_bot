@@ -1,10 +1,11 @@
 import os
 import sqlite3
 
-import openpyxl
+import openpyxl  # Создаем файл Excel и записываем данные
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
+from openpyxl.utils import get_column_letter
 
 from keyboards.admin_keyboards import admin_panel_keyboard, order_status
 from system.dispatcher import dp, bot
@@ -16,16 +17,8 @@ cursor = conn.cursor()
 cursor.execute('''CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER,
                                                     first_name TEXT, last_name TEXT, username TEXT, date TEXT)''')
 # Создаем таблицу order_status
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS order_status (
-        order_number,
-        in_processing,
-        sent,
-        cancelled,
-        refund,
-        completed
-    )
-''')
+cursor.execute('''CREATE TABLE IF NOT EXISTS order_status (order_number, in_processing, sent, cancelled, refund,
+                                                           completed)''')
 conn.commit()
 
 
@@ -43,7 +36,7 @@ async def admin_panel__handler(callback_query: types.CallbackQuery):
 @dp.callback_query_handler(lambda c: c.data == 'check_bot_users')
 async def admin_panel_handler(callback_query: types.CallbackQuery):
     # Проверяем, является ли пользователь, который вызывает команду, администратором
-    if callback_query.from_user.id not in [5837917794]:  # Если это не админ, то выводим предупреждение
+    if callback_query.from_user.id not in [5837917794, 1062323239]:  # Если это не админ, то выводим предупреждение
         await bot.send_message(callback_query.from_user.id, 'У вас нет доступа к этой команде.')
         return
 
@@ -51,9 +44,8 @@ async def admin_panel_handler(callback_query: types.CallbackQuery):
     cursor.execute('SELECT * FROM users')
     data = cursor.fetchall()
 
-    # Создаем файл Excel и записываем данные
-    import openpyxl
-    from openpyxl.utils import get_column_letter
+
+
 
     wb = openpyxl.Workbook()
     sheet = wb.active
@@ -114,7 +106,7 @@ def create_excel_file(orders):
 # Обработчик команды для выгрузки данных в Excel
 @dp.callback_query_handler(lambda c: c.data == 'unload_orders')
 async def admin_panel_handler(callback_query: types.CallbackQuery):
-    if callback_query.from_user.id not in [5837917794]:  # Если это не админ, то выводим предупреждение
+    if callback_query.from_user.id not in [5837917794, 1062323239]:  # Если это не админ, то выводим предупреждение
         await bot.send_message(callback_query.from_user.id, 'У вас нет доступа к этой команде.')
         return
     # Получение данных из базы данных
@@ -140,7 +132,7 @@ class OrderStatus(StatesGroup):
 @dp.callback_query_handler(lambda c: c.data == 'change_order_status')
 async def change_order_status_handler(callback_query: types.CallbackQuery):
     # Проверяем, является ли пользователь, который вызывает команду, администратором
-    if callback_query.from_user.id not in [5837917794]:
+    if callback_query.from_user.id not in [5837917794, 1062323239]:
         await callback_query.answer('У вас нет доступа к этой команде.', show_alert=True)
         return
 
@@ -154,7 +146,7 @@ async def change_order_status_handler(callback_query: types.CallbackQuery):
 @dp.callback_query_handler(lambda c: c.data in ['in_processing', 'sent', 'cancelled', 'refund', 'completed'])
 async def set_order_status_handler(callback_query: types.CallbackQuery):
     # Проверяем, является ли пользователь, который вызывает команду, администратором
-    if callback_query.from_user.id not in [5837917794]:
+    if callback_query.from_user.id not in [5837917794, 1062323239]:
         await callback_query.answer('У вас нет доступа к этой команде.', show_alert=True)
         return
 

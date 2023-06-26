@@ -133,8 +133,8 @@ async def write_price(message: types.Message, state: FSMContext):
         user_info += f"@{user.username}\n"
 
     # admin_id = 5958542955  # Poizon менеджер
-    admin_id = 5837917794  # @PyAdminRUS
-
+    # admin_id = 5837917794  # @PyAdminRUS
+    admin_id = 1062323239  # @vitalure
     order_details_admin = (f"Заказ от: {user_info}\n"
                            f"Номер телефона: {phone}\n"
                            f"Ссылка на товар: {link}\n"
