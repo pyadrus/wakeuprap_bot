@@ -4,7 +4,7 @@ from handlers.admin import admin_handler
 from handlers.greeting import greeting_handler
 from handlers.product_order import product_order_handler
 from handlers.price_calculator import price_calculator_handler
-from messages.user import user_handler
+from handlers.user import user_handler
 from system.dispatcher import dp
 
 
