@@ -17,8 +17,7 @@ cursor = conn.cursor()
 cursor.execute('''CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER,
                                                     first_name TEXT, last_name TEXT, username TEXT, date TEXT)''')
 # Создаем таблицу order_status
-cursor.execute('''CREATE TABLE IF NOT EXISTS order_status (order_number, in_processing, sent, cancelled, refund,
-                                                           completed)''')
+cursor.execute('''CREATE TABLE IF NOT EXISTS order_status (order_number, in_processing, sent, cancelled, refund)''')
 conn.commit()
 
 
@@ -32,7 +31,6 @@ async def admin_panel__handler(callback_query: types.CallbackQuery):
                            parse_mode=types.ParseMode.HTML)
 
 
-# Обработчик команды /export
 @dp.callback_query_handler(lambda c: c.data == 'check_bot_users')
 async def admin_panel_handler(callback_query: types.CallbackQuery):
     # Проверяем, является ли пользователь, который вызывает команду, администратором
@@ -43,9 +41,6 @@ async def admin_panel_handler(callback_query: types.CallbackQuery):
     # Получаем данные всех пользователей из базы данных
     cursor.execute('SELECT * FROM users')
     data = cursor.fetchall()
-
-
-
 
     wb = openpyxl.Workbook()
     sheet = wb.active
@@ -74,8 +69,8 @@ async def admin_panel_handler(callback_query: types.CallbackQuery):
     os.remove('users.xlsx')
 
 
-# Функция для создания файла Excel с данными заказов
 def create_excel_file(orders):
+    """Функция для создания файла Excel с данными заказов"""
     workbook = openpyxl.Workbook()
     sheet = workbook.active
     # Заголовки столбцов
@@ -103,9 +98,9 @@ def create_excel_file(orders):
     return workbook
 
 
-# Обработчик команды для выгрузки данных в Excel
 @dp.callback_query_handler(lambda c: c.data == 'unload_orders')
 async def admin_panel_handler(callback_query: types.CallbackQuery):
+    """Обработчик команды для выгрузки данных в Excel"""
     if callback_query.from_user.id not in [5837917794, 1062323239]:  # Если это не админ, то выводим предупреждение
         await bot.send_message(callback_query.from_user.id, 'У вас нет доступа к этой команде.')
         return
@@ -143,7 +138,7 @@ async def change_order_status_handler(callback_query: types.CallbackQuery):
                            parse_mode=types.ParseMode.HTML)
 
 
-@dp.callback_query_handler(lambda c: c.data in ['in_processing', 'sent', 'cancelled', 'refund', 'completed'])
+@dp.callback_query_handler(lambda c: c.data in ['in_processing', 'sent', 'cancelled', 'refund'])
 async def set_order_status_handler(callback_query: types.CallbackQuery):
     # Проверяем, является ли пользователь, который вызывает команду, администратором
     if callback_query.from_user.id not in [5837917794, 1062323239]:
@@ -173,7 +168,7 @@ async def process_order_number(message: types.Message, state: FSMContext):
     cursor.execute(f"UPDATE order_status SET {order_status} = ? WHERE order_number = ?", (True, order_number))
 
     # Обнуляем другие статусы заказа
-    for column in ['in_processing', 'sent', 'cancelled', 'refund', 'completed']:
+    for column in ['in_processing', 'sent', 'cancelled', 'refund']:
         if column != order_status:
             cursor.execute(f"UPDATE order_status SET {column} = ? WHERE order_number = ?", (False, order_number))
 
@@ -194,6 +189,5 @@ def admin_handler():
     """Регистрируем handlers для администратора"""
     dp.register_callback_query_handler(change_order_status_handler, lambda c: c.data == 'change_order_status')
     dp.register_callback_query_handler(set_order_status_handler,
-                                       lambda c: c.data in ['in_processing', 'sent', 'cancelled', 'refund',
-                                                            'completed'])
+                                       lambda c: c.data in ['in_processing', 'sent', 'cancelled', 'refund'])
     dp.register_message_handler(process_order_number, state=OrderStatus.waiting_for_order_number)

@@ -31,7 +31,7 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOI
                                                     first_name TEXT, last_name TEXT, username TEXT, date TEXT)''')
 # Создаем таблицу order_status
 cursor.execute('''CREATE TABLE IF NOT EXISTS order_status (order_number, in_processing, sent, cancelled,
-                                                           refund, completed)''')
+                                                           refund)''')
 conn.commit()
 
 
@@ -43,7 +43,7 @@ def get_order_status(order_number):
         order_number, in_processing, sent, cancelled, refund, completed = result
         # Формируем словарь со статусом заказа
         order_status = {'order_number': order_number, 'in_processing': in_processing, 'sent': sent,
-                        'cancelled': cancelled, 'refund': refund, 'completed': completed}
+                        'cancelled': cancelled, 'refund': refund}
         return order_status
     else:
         return None
@@ -59,15 +59,13 @@ async def check_order_status(message: types.Message, state: FSMContext):
         # Пользовательский заказ найден
         status_message = f"Статус вашего заказа ({order_number}):\n\n"
         if order_status['in_processing']:
-            status_message += "В обработке\n"
+            status_message += "Ожидается на складе\n"
         if order_status['sent']:
-            status_message += "Отправлен\n"
+            status_message += "Заказ прибыл на склад и отправлен в Минск\n"
         if order_status['cancelled']:
-            status_message += "Отменен\n"
+            status_message += "Заказ прибыл на склад в Минске\n"
         if order_status['refund']:
-            status_message += "Возврат\n"
-        if order_status['completed']:
-            status_message += "Завершен\n"
+            status_message += "Заказ получен\n"
         await message.reply(status_message)
     else:
         # Заказ с указанным номером не найден

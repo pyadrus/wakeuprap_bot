@@ -1,6 +1,5 @@
-# Импортируем модуль для работы с базой данных SQLite
 import datetime
-import sqlite3
+import sqlite3  # Импортируем модуль для работы с базой данных SQLite
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
@@ -22,18 +21,14 @@ conn.commit()
 async def greeting(message: types.Message, state: FSMContext):
     """Обработчик команды /start, он же пост приветствия"""
     await state.reset_state()
-
     # Получаем текущую дату и время
     current_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
     # Записываем данные пользователя в базу данных
     cursor.execute('''INSERT INTO users (user_id, first_name, last_name, username, date) VALUES (?, ?, ?, ?, ?)''',
                    (message.from_user.id, message.from_user.first_name, message.from_user.last_name,
                     message.from_user.username, current_date))
     conn.commit()
-
     print(f'Привет! нажали на кнопку /start {message.from_user.id, message.from_user.username, current_date}')
-
     keyboards_greeting = greeting_keyboards()
     # Клавиатура для Калькулятора цен или Контактов
     await message.reply(greeting_post, reply_markup=keyboards_greeting, disable_web_page_preview=True,
@@ -44,16 +39,13 @@ async def greeting(message: types.Message, state: FSMContext):
 async def greeting(message: types.Message, state: FSMContext):
     """Обработчик команды /start, он же пост приветствия"""
     await state.reset_state()
-
     # Получаем текущую дату и время
     current_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
     # Записываем данные пользователя в базу данных
     cursor.execute('''INSERT INTO users (user_id, first_name, last_name, username, date) VALUES (?, ?, ?, ?, ?)''',
                    (message.from_user.id, message.from_user.first_name, message.from_user.last_name,
                     message.from_user.username, current_date))
     conn.commit()
-
     print(f'Привет! нажали на кнопку /start {message.from_user.id, message.from_user.username, current_date}')
     if message.from_user.id not in [5837917794, 1062323239]:  # Если это не админ, то выводим предупреждение
         await message.reply('У вас нет доступа к этой команде.')

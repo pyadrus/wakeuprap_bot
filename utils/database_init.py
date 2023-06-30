@@ -9,10 +9,10 @@ def connecting_database():
 
 
 def creating_table_for_orders():
-    """Создание таблицы для заказов"""
+    """Создание таблицы для заказов (заказы формирует администратор)"""
     with sqlite3.connect("setting/orders.db") as conn:  # Подключение к базе данных SQLite
         cursor = conn.cursor()
-        cursor.execute("""CREATE TABLE IF NOT EXISTS orders (user_id, name, phone, link, size, color, price, order_number, date)""")
+        cursor.execute("""CREATE TABLE IF NOT EXISTS orders (order_number, name, price, approximate_date)""")
         conn.commit()
 
 

@@ -18,14 +18,14 @@ def admin_panel_keyboard():
 def order_status():
     """Статус заказа"""
     order_status_keyboard = InlineKeyboardMarkup()
-    in_processing_button = InlineKeyboardButton(text='В обработке', callback_data='in_processing')
-    sent_button = InlineKeyboardButton(text='Отправлен', callback_data='sent')
-    order_status_keyboard.row(in_processing_button, sent_button)
-    cancelled_button = InlineKeyboardButton(text='Отменен', callback_data='cancelled')
-    refund_button = InlineKeyboardButton(text='Возврат', callback_data='refund')
-    order_status_keyboard.row(cancelled_button, refund_button)
-    completed_button = InlineKeyboardButton(text='Завершен', callback_data='completed')
-    order_status_keyboard.row(completed_button)
+    in_processing_button = InlineKeyboardButton(text='Ожидается на складе', callback_data='in_processing')
+    order_status_keyboard.row(in_processing_button)
+    sent_button = InlineKeyboardButton(text='Заказ прибыл на склад и отправлен в Минск', callback_data='sent')
+    order_status_keyboard.row(sent_button)
+    cancelled_button = InlineKeyboardButton(text='Заказ прибыл на склад в Минске', callback_data='cancelled')
+    order_status_keyboard.row(cancelled_button)
+    refund_button = InlineKeyboardButton(text='Заказ получен', callback_data='refund')
+    order_status_keyboard.row(refund_button)
     return order_status_keyboard
 
 
