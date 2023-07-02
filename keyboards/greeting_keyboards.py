@@ -33,7 +33,7 @@ def greeting_keyboards_admin() -> InlineKeyboardMarkup:
     # Получение данных о всех заказах пользователя
     my_order_keyboards = InlineKeyboardButton(text='Мои заказы', callback_data='my_order')
     keyboards_greeting_admin.row(my_order_keyboards)
-    make_an_order_keyboards = InlineKeyboardButton(text='🔥 Сформировать заказ', callback_data='make_an_order')
+    make_an_order_keyboards = InlineKeyboardButton(text='🔥 Сформировать заказ 🔥 ', callback_data='make_an_order')
     keyboards_greeting_admin.row(make_an_order_keyboards)
     # Админ панель для админа
     keyboards_admin = InlineKeyboardButton(text='👨‍💻 Администратор', callback_data='admin')

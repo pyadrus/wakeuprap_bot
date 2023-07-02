@@ -3,6 +3,7 @@ from aiogram import executor
 from handlers.add_track_number_handlers import adding_track_number_handler
 from handlers.admin_handlers import admin_handler
 from handlers.application_handlers import register_application_handlers
+from handlers.exchange_rate_handlers import register_exchange_rate_handlers
 from handlers.greeting_handlers import greeting_handler
 from handlers.product_order_handlers import product_order_handler
 from handlers.price_calculator_handlers import price_calculator_handler
@@ -25,6 +26,7 @@ def main():
     register_application_handlers()  # Приложение и сайты
     adding_track_number_handler()  # Добавление трека
     my_order_handler()  # Мои заказы
+    register_exchange_rate_handlers()  # Изменение курса валют
 
 
 if __name__ == '__main__':
