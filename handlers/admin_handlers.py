@@ -74,26 +74,16 @@ def create_excel_file(orders):
     workbook = openpyxl.Workbook()
     sheet = workbook.active
     # Заголовки столбцов
-    sheet['A1'] = 'User ID'
-    sheet['B1'] = 'Имя'
-    sheet['C1'] = 'Номер телефона'
-    sheet['D1'] = 'Ссылка на товар'
-    sheet['E1'] = 'Размер'
-    sheet['F1'] = 'Цвет товара'
-    sheet['G1'] = 'Цена на товар в юанях'
-    sheet['H1'] = 'Номер заказа'
-    sheet['I1'] = 'Дата заказа'
+    sheet['A1'] = 'Номер заказа'
+    sheet['B1'] = 'Название заказа'
+    sheet['C1'] = 'Цена на товар'
+    sheet['D1'] = 'Примерная дата доставки'
     # Заполнение данными заказов
     for index, order in enumerate(orders, start=2):
-        sheet.cell(row=index, column=1).value = order[0]  # User ID
-        sheet.cell(row=index, column=2).value = order[1]  # Имя
-        sheet.cell(row=index, column=3).value = order[2]  # Номер телефона
-        sheet.cell(row=index, column=4).value = order[3]  # Ссылка
-        sheet.cell(row=index, column=5).value = order[4]  # Размер
-        sheet.cell(row=index, column=6).value = order[5]  # Цвет
-        sheet.cell(row=index, column=7).value = order[6]  # Цена в юанях
-        sheet.cell(row=index, column=8).value = order[7]  # Номер заказа
-        sheet.cell(row=index, column=9).value = order[8]  # Дата заказа
+        sheet.cell(row=index, column=1).value = order[0]  # Номер заказа
+        sheet.cell(row=index, column=2).value = order[1]  # Название заказа
+        sheet.cell(row=index, column=3).value = order[2]  # Цена на товар
+        sheet.cell(row=index, column=4).value = order[3]  # Примерная дата доставки
 
     return workbook
 

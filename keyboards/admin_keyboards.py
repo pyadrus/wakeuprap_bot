@@ -4,14 +4,22 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 def admin_panel_keyboard():
     """Клавиатура админа"""
     admin_keyboard = InlineKeyboardMarkup()
-    change_order_status_button = InlineKeyboardButton(text='Изменить статус заказа',
+    change_order_status_button = InlineKeyboardButton(text='Статус заказа',
                                                       callback_data='change_order_status')
-    unload_orders_button = InlineKeyboardButton(text='Выгрузить заказы', callback_data='unload_orders')
-    admin_keyboard.row(change_order_status_button, unload_orders_button)
-    check_bot_users = InlineKeyboardButton(text='Проверить пользователей бота', callback_data='check_bot_users')
-    admin_keyboard.row(check_bot_users)
     change_exchange_rate_button = InlineKeyboardButton(text='Изменить курс валют', callback_data='change_exchange_rate')
-    admin_keyboard.row(change_exchange_rate_button)
+    admin_keyboard.row(change_order_status_button, change_exchange_rate_button)
+
+    unload_orders_button = InlineKeyboardButton(text='Выгрузить заказы', callback_data='unload_orders')
+    check_bot_users = InlineKeyboardButton(text='Выгрузить users', callback_data='check_bot_users')
+    admin_keyboard.row(unload_orders_button, check_bot_users)
+
+    make_an_order_keyboards = InlineKeyboardButton(text='🔥 Сформировать заказ 🔥 ', callback_data='make_an_order')
+    admin_keyboard.row(make_an_order_keyboards)
+
+    calculate_order_amount_keyboards = InlineKeyboardButton(text='💵 Рассчитать стоимость', callback_data='calculate_order_amount')
+    # Пользователь добавляет трек номер и получает данные
+    admin_keyboard.row(calculate_order_amount_keyboards)
+
     return admin_keyboard
 
 

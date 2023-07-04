@@ -5,8 +5,11 @@ from handlers.admin_handlers import admin_handler
 from handlers.application_handlers import register_application_handlers
 from handlers.exchange_rate_handlers import register_exchange_rate_handlers
 from handlers.greeting_handlers import greeting_handler
-from handlers.product_order_handlers import product_order_handler
+from handlers.make_order_user_handlers import register_make_order_user_handlers
+from handlers.price_calculator_by_handlers import price_calculator_by_handler
 from handlers.price_calculator_handlers import price_calculator_handler
+from handlers.product_order_handlers import product_order_handler
+from handlers.price_calculator_ru_handlers import price_calculator_ru_handler
 from handlers.questions_handlers import register_answers_main_questions_handlers
 from handlers.reviews_handlers import register_reviews_handler
 from handlers.show_orders_handlers import my_order_handler
@@ -27,6 +30,9 @@ def main():
     adding_track_number_handler()  # Добавление трека
     my_order_handler()  # Мои заказы
     register_exchange_rate_handlers()  # Изменение курса валют
+    register_make_order_user_handlers()  # Кнопка заказа пользователя
+    price_calculator_ru_handler()  # Расчет стоимости в русском
+    price_calculator_by_handler()
 
 
 if __name__ == '__main__':

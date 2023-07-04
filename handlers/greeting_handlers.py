@@ -4,7 +4,8 @@ import sqlite3  # Импортируем модуль для работы с б�
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from keyboards.greeting_keyboards import greeting_keyboards, greeting_keyboards_admin
+from keyboards.admin_keyboards import admin_panel_keyboard
+from keyboards.greeting_keyboards import greeting_keyboards
 from messages.greeting_post import greeting_post
 from system.dispatcher import dp
 
@@ -50,9 +51,9 @@ async def greeting(message: types.Message, state: FSMContext):
     if message.from_user.id not in [5837917794, 1062323239]:  # Если это не админ, то выводим предупреждение
         await message.reply('У вас нет доступа к этой команде.')
         return
-    keyboards_greeting_admin = greeting_keyboards_admin()
+    admin_keyboard = admin_panel_keyboard()
     # Клавиатура для Калькулятора цен или Контактов
-    await message.reply(greeting_post, reply_markup=keyboards_greeting_admin, disable_web_page_preview=True,
+    await message.reply(greeting_post, reply_markup=admin_keyboard, disable_web_page_preview=True,
                         parse_mode=types.ParseMode.HTML)
 
 
