@@ -6,7 +6,7 @@ from system.dispatcher import dp, bot
 @dp.callback_query_handler(lambda c: c.data == 'reviews')
 async def reviews_handlers(callback_query: types.CallbackQuery):
     """Отзывы от пользователей"""
-    message_text_clothing = ("Тут будут ссылки на актуальные истории из Instagram.\n\n"
+    message_text_clothing = ("Отзывы наших довольных клиентов\n\n"
                              "👉 <a href='https://instagram.com/wakeuprap.by?igshid=NTc4MTIwNjQ2YQ=='>Instagram</a>"
                              "\n\nДля возврата в начало нажмите /start")
     # Клавиатура для выбора товара

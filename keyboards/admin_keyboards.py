@@ -13,7 +13,7 @@ def admin_panel_keyboard():
     check_bot_users = InlineKeyboardButton(text='Выгрузить users', callback_data='check_bot_users')
     admin_keyboard.row(unload_orders_button, check_bot_users)
 
-    make_an_order_keyboards = InlineKeyboardButton(text='🔥 Сформировать заказ 🔥 ', callback_data='make_an_order')
+    make_an_order_keyboards = InlineKeyboardButton(text='🔥 Оформить заказ 🔥 ', callback_data='make_an_order')
     admin_keyboard.row(make_an_order_keyboards)
 
     calculate_order_amount_keyboards = InlineKeyboardButton(text='💵 Рассчитать стоимость', callback_data='calculate_order_amount')

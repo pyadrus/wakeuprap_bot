@@ -8,7 +8,7 @@ def greeting_keyboards() -> InlineKeyboardMarkup:
     # Получение данных о всех заказах пользователя
     my_order_keyboards = InlineKeyboardButton(text='📦 Мои заказы', callback_data='my_order')
     keyboards_greeting.row(add_track_number, my_order_keyboards)
-    make_an_order_keyboards = InlineKeyboardButton(text='🔥 Сформировать заказ 🔥 ', callback_data='make_an_order_user')
+    make_an_order_keyboards = InlineKeyboardButton(text='🔥 Оформить заказ 🔥 ', callback_data='make_an_order_user')
     keyboards_greeting.row(make_an_order_keyboards)
     calculate_order = InlineKeyboardButton(text='💵 Рассчитать стоимость', callback_data='calculate_order_amount')
     keyboards_greeting.row(calculate_order)
