@@ -31,8 +31,8 @@ def main():
     my_order_handler()  # Мои заказы
     register_exchange_rate_handlers()  # Изменение курса валют
     register_make_order_user_handlers()  # Кнопка заказа пользователя
-    price_calculator_ru_handler()  # Расчет стоимости в русском
-    price_calculator_by_handler()
+    price_calculator_ru_handler()  # Расчет стоимости для России
+    price_calculator_by_handler()  # Расчет стоимости для Беларуси
 
 
 if __name__ == '__main__':

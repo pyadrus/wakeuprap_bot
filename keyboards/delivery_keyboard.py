@@ -13,10 +13,11 @@ def country_delivery_keyboard():
 def delivery_keyboard_technics_ru():
     """Клавиатура выбора валюты"""
     technics_delivery_keyboard = InlineKeyboardMarkup()
-    technics_aircraft_button = InlineKeyboardButton(text='Польский злотый', callback_data='polish_zloty_ru')
-    technics_accelerated_by_truck = InlineKeyboardButton(text='Евро', callback_data='euro_ru')
-    technics_a_regular_truck = InlineKeyboardButton(text='Юани', callback_data='yuan_ru')
-    technics_delivery_keyboard.row(technics_aircraft_button, technics_accelerated_by_truck, technics_a_regular_truck)
+    technics_aircraft_button = InlineKeyboardButton(text='🇵🇱 Польский злотый', callback_data='polish_zloty_ru')
+    technics_accelerated_by_truck = InlineKeyboardButton(text='🇪🇺 Евро', callback_data='euro_ru')
+    technics_a_regular_truck = InlineKeyboardButton(text='🇨🇳 Юани', callback_data='yuan_ru')
+    technics_delivery_keyboard.row(technics_aircraft_button)
+    technics_delivery_keyboard.row(technics_accelerated_by_truck, technics_a_regular_truck)
     return technics_delivery_keyboard
 
 
@@ -53,10 +54,11 @@ def product_category_by_russia_euro_ru_keyboard():
 def delivery_keyboard_technics_by():
     """Клавиатура выбора валюты"""
     technics_delivery_keyboard = InlineKeyboardMarkup()
-    technics_aircraft_button = InlineKeyboardButton(text='Польский злотый', callback_data='polish_zloty_by')
-    technics_accelerated_by_truck = InlineKeyboardButton(text='Евро', callback_data='euro_by')
-    technics_a_regular_truck = InlineKeyboardButton(text='Юани', callback_data='yuan_by')
-    technics_delivery_keyboard.row(technics_aircraft_button, technics_accelerated_by_truck, technics_a_regular_truck)
+    technics_aircraft_button = InlineKeyboardButton(text='🇵🇱 Польский злотый', callback_data='polish_zloty_by')
+    technics_accelerated_by_truck = InlineKeyboardButton(text='🇪🇺 Евро', callback_data='euro_by')
+    technics_a_regular_truck = InlineKeyboardButton(text='🇨🇳 Юани', callback_data='yuan_by')
+    technics_delivery_keyboard.row(technics_aircraft_button)
+    technics_delivery_keyboard.row(technics_accelerated_by_truck, technics_a_regular_truck)
     return technics_delivery_keyboard
 
 
