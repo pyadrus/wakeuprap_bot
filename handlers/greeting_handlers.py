@@ -9,8 +9,8 @@ from keyboards.greeting_keyboards import greeting_keyboards
 from messages.greeting_post import greeting_post
 from system.dispatcher import dp
 
-# Подключение к базе данных SQLite
-conn = sqlite3.connect('setting/orders.db')
+
+conn = sqlite3.connect('setting/orders.db')# Подключение к базе данных SQLite
 cursor = conn.cursor()
 # Создаем таблицу, если она не существует
 cursor.execute('''CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER,

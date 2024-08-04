@@ -45,14 +45,11 @@ async def write_order_number(message: types.Message, state: FSMContext):
     """Обработчик ввода номера заказа"""
     order_number = message.text  # Сохранение значения переменной message.text в состоянии (state) с именем order_number
     await state.update_data(order_number=order_number)
-    # Подключение к базе данных SQLite
-    conn = sqlite3.connect('setting/orders.db')
-    # Создание курсора для выполнения SQL-запросов
-    cursor = conn.cursor()
+    conn = sqlite3.connect('setting/orders.db')  # Подключение к базе данных SQLite
+    cursor = conn.cursor()  # Создание курсора для выполнения SQL-запросов
     # Выполнение SQL-запроса для извлечения данных
     cursor.execute("SELECT * FROM orders WHERE order_number = ?", (order_number,))
-    # Извлечение строки данных из результата запроса
-    row = cursor.fetchone()
+    row = cursor.fetchone()  # Извлечение строки данных из результата запроса
     if row:
         status_list = get_order_status(order_number)
         status_message = "\n".join(status_list) if status_list else "Статус неизвестен"
@@ -84,10 +81,8 @@ def dell_duplicate_order_number(order_number):
     # Удаление дубликатов из таблицы user_orders
     cursor.execute(
         "DELETE FROM user_orders WHERE rowid NOT IN (SELECT MIN(rowid) FROM user_orders GROUP BY user_id, order_number)")
-    # Применение изменений
-    conn.commit()
-    # Закрытие соединения с базой данных
-    conn.close()
+    conn.commit()  # Применение изменений
+    conn.close()  # Закрытие соединения с базой данных
 
 
 def adding_track_number_handler():

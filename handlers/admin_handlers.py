@@ -10,8 +10,7 @@ from openpyxl.utils import get_column_letter
 from keyboards.admin_keyboards import admin_panel_keyboard, order_status
 from system.dispatcher import dp, bot
 
-# Подключение к базе данных SQLite
-conn = sqlite3.connect('setting/orders.db')
+conn = sqlite3.connect('setting/orders.db')  # Подключение к базе данных SQLite
 cursor = conn.cursor()
 # Создаем таблицу, если она не существует
 cursor.execute('''CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER,

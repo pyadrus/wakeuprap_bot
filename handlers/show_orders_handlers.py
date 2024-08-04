@@ -10,10 +10,8 @@ from system.dispatcher import dp, bot
 @dp.callback_query_handler(lambda c: c.data == "my_order")
 async def my_order(callback_query: types.CallbackQuery, state: FSMContext):
     await state.reset_state()  # Сброс состояния FSM (конечного автомата) к его начальному состоянию
-    # Подключение к базе данных SQLite
-    conn = sqlite3.connect('setting/orders.db')
-    # Создание курсора для выполнения SQL-запросов
-    cursor = conn.cursor()
+    conn = sqlite3.connect('setting/orders.db')  # Подключение к базе данных SQLite
+    cursor = conn.cursor()  # Создание курсора для выполнения SQL-запросов
     # Выполнение SQL-запроса для извлечения данных
     cursor.execute("SELECT * FROM user_orders WHERE user_id = ?", (callback_query.from_user.id,))
     # Извлечение строк данных из результата запроса

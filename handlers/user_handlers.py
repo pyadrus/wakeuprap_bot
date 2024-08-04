@@ -14,11 +14,8 @@ class MakingAnOrder(StatesGroup):
 
 @dp.callback_query_handler(lambda c: c.data == 'add_track_number')
 async def check_order_start(callback_query: types.CallbackQuery):
-    # await callback_query.answer("Введите номер заказа:")
-
     user_id = callback_query.from_user.id
     await bot.send_message(user_id, "Пожалуйста, введите номер заказа:")
-
     # Переходим в состояние ожидания ввода номера заказа
     await MakingAnOrder.waiting_for_order_number.set()
 
